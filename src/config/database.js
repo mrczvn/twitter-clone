@@ -9,6 +9,6 @@ module.exports = {
   password: process.env.DB_PWD,
   define: {
     timestamps: true,
-    undescored: true,
+    underscored: true,
   },
 };
