@@ -20,11 +20,6 @@ module.exports = {
         onUpadate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      comment_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: { model: 'comments', key: 'id_comment' },
-      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
