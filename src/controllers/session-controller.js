@@ -1,4 +1,7 @@
 import User from '../models/user';
+import jwt, { sign } from 'jsonwebtoken';
+
+import config from '../config/auth';
 
 class SessionController {
   constructor() {}
@@ -17,7 +20,10 @@ class SessionController {
       if (created === false) {
         return res.status(400).json({ message: 'Usuário já existe!' });
       } else {
-        return res.status(201).json({ message: 'Logado com sucesso!' });
+        const payload = { user: user.id };
+        return res.status(201).json({
+          token: jwt.sign(payload, config.secret, { expiresIn: '1h' }),
+        });
       }
     } catch (error) {
       console.error(error);
@@ -31,16 +37,20 @@ class SessionController {
       .toString()
       .split(':');
 
-    try {
-      if ((username, password)) {
+    if ((username, password)) {
+      try {
         const user = await User.findOne({ where: { username } });
         if (await User.isPassword(user.password, password)) {
-          return res.status(200).json({ message: 'Logado com sucesso!' });
+          const payload = { user: user.id };
+          return res.status(200).json({
+            token: sign(payload, config.secret, { expiresIn: '1h' }),
+          });
         }
+        return res.status(401).json({ message: 'Login inválido!' });
+      } catch (error) {
+        console.error(error);
+        return res.status(401).json({ message: 'Login inválido!' });
       }
-    } catch (error) {
-      console.error(error);
-      return res.status(401).json({ message: 'Login inválido!' });
     }
   }
 }
