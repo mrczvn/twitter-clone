@@ -27,11 +27,11 @@ describe('Route /users', function () {
   it('should return a list of users', function (done) {
     request.get('/users').end((err, res) => {
       const [user] = res.body;
-      const { id, username, email, password } = user;
+      const { id, username, email } = user;
       expect(id).to.be.eql(defaultUser.id);
       expect(username).to.be.eql(defaultUser.username);
       expect(email).to.be.eql(defaultUser.email);
-      expect(password).to.be.eql(defaultUser.password);
+      expect(user).have.property('password');
 
       done(err);
     });
@@ -39,11 +39,11 @@ describe('Route /users', function () {
 
   it('should return a user', function (done) {
     request.get('/users/1').end((err, res) => {
-      const { id, username, email, password } = res.body;
+      const { id, username, email } = res.body;
       expect(id).to.eql(defaultUser.id);
       expect(username).to.be.eql(defaultUser.username);
       expect(email).to.be.eql(defaultUser.email);
-      expect(password).to.be.eql(defaultUser.password);
+      expect(res.body).have.property('password');
 
       done(err);
     });
@@ -60,11 +60,11 @@ describe('Route /users', function () {
       .post('/users')
       .send(newUser)
       .end((err, res) => {
-        const { id, username, email, password } = res.body;
+        const { id, username, email } = res.body;
         expect(id).to.be.eq(newUser.id);
         expect(username).to.be.eql(newUser.username);
         expect(email).to.be.eql(newUser.email);
-        expect(password).to.be.eql(newUser.password);
+        expect(res.body).have.property('password');
 
         done(err);
       });
@@ -91,5 +91,42 @@ describe('Route /users', function () {
       expect(res.status).to.be.eql(204);
       done(err);
     });
+  });
+
+  it('should log a user', function (done) {
+    const logUser = {
+      id: 2,
+      username: 'mvrtr',
+      email: 'vinicius@email.com',
+      password: '1234',
+    };
+    const isVallid = {
+      message: 'Logado com sucesso!',
+    };
+    request
+      .post('/signup')
+      .send(logUser)
+      .end((err, res) => {
+        const { message } = res.body;
+        expect(message).to.be.eql(isVallid.message);
+        expect(res.status).to.be.eql(201);
+        done(err);
+      });
+  });
+
+  it('should signin a user', function (done) {
+    const { username, password } = defaultUser;
+    const isVallid = {
+      message: 'Logado com sucesso!',
+    };
+    request
+      .get('/signin')
+      .auth(username, password)
+      .end((err, res) => {
+        const { message } = res.body;
+        expect(message).to.be.eql(isVallid.message);
+        expect(res.status).to.be.eql(200);
+        done(err);
+      });
   });
 });

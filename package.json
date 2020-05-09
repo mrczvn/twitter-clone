@@ -6,12 +6,13 @@
   "scripts": {
     "start": "nodemon src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test-integration": "mocha --reporter spec --require esm --timeout 5000 --recursive --exit test/integration/*.js"
+    "test-integration": "mocha --reporter spec --require esm --timeout 10000 --recursive --exit test/integration/*.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "pg": "^8.0.3",
