@@ -1,4 +1,5 @@
 import Users from './controllers/user-controller';
+import SessionController from './controllers/session-controller';
 
 export default (app) => {
   // RETORNA A CRIAÇÃO DE UM USER
@@ -15,4 +16,10 @@ export default (app) => {
 
   // DESTROY DE UM USER
   app.delete('/users/:id', Users.destroy);
+
+  // SIGNUP DE UM USER
+  app.post('/signup', SessionController.signUp);
+
+  // SIGNIN DE UM USER
+  app.get('/signin', SessionController.signIn);
 };
