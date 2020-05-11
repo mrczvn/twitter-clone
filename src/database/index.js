@@ -18,9 +18,15 @@ class Database {
       console.error('Unable to connect to the database: ', error);
     }
 
-    this.loadModels().map((obj) =>
-      Object.values(obj).map((model) => model.init(this.connection))
-    );
+    this.loadModels()
+      .map((obj) =>
+        Object.values(obj).map((model) => model.init(this.connection))
+      )
+      .map((obj) => {
+        Object.values(obj).map(
+          (model) => model.associate && model.associate(this.connection.models)
+        );
+      });
 
     return this.connection;
   }
