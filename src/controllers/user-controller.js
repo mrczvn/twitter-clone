@@ -30,10 +30,13 @@ class UserController {
   }
 
   async findOne(req, res) {
-    const id = req.params;
+    const { id, username, email } = req.user;
     try {
-      const user = await User.findOne({ where: id });
-      return res.status(200).json(user);
+      return res.json({
+        id,
+        username,
+        email,
+      });
     } catch (error) {
       console.error(error);
       return res.status(404).json(error);
@@ -41,7 +44,7 @@ class UserController {
   }
 
   async update(req, res) {
-    const { id } = req.params;
+    const { id } = req.user;
     const { username, email, password } = req.body;
     try {
       const user = await User.update(
@@ -58,7 +61,7 @@ class UserController {
   }
 
   async destroy(req, res) {
-    const { id } = req.params;
+    const { id } = req.user;
     try {
       const user = await User.destroy({ where: { id } });
       return res.sendStatus(204);
