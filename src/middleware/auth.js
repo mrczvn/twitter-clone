@@ -16,10 +16,7 @@ export default () => {
       if (!user) {
         return done(null, false);
       }
-      return done(null, {
-        user: user.id,
-        email: user.email,
-      });
+      return done(null, user);
     } catch (error) {
       return done(error, null);
     }
