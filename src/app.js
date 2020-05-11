@@ -18,7 +18,7 @@ class App {
   }
 
   initRoutes() {
-    return (this.routes = routes(this.app));
+    return (this.routes = routes(this.app, this.auth));
   }
 }
 
