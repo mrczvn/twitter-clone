@@ -23,6 +23,10 @@ class User extends Model {
   static isPassword(encodedPassword, password) {
     return bcrypt.compareSync(password, encodedPassword);
   }
+
+  static associate(models) {
+    this.hasMany(models.Post, { foreignKey: 'user_id', as: 'posts' });
+  }
 }
 
 export default User;
