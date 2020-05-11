@@ -1,16 +1,17 @@
-import Users from './controllers/user-controller';
 import SessionController from './controllers/session-controller';
+import Users from './controllers/user-controller';
 import Posts from './controllers/post-controller';
+import Comments from './controllers/comment-controller';
 
 export default (app, auth) => {
   // SIGNUP DE UM USER
-  app.post('/api/signup', SessionController.signUp);
+  app.post('/signup', SessionController.signUp);
 
   // SIGNIN DE UM USER
-  app.get('/api/signin', SessionController.signIn);
+  app.get('/signin', SessionController.signIn);
 
   app
-    .route('/api/users')
+    .route('/users')
     .all(auth.authenticate())
     // DELETA O USER LOGADO
     .delete(Users.destroy)
@@ -20,7 +21,7 @@ export default (app, auth) => {
     .get(Users.findOne);
 
   app
-    .route('/api/users/posts')
+    .route('/users/posts')
     .all(auth.authenticate())
     // USER LOGADO CRIA UM POST
     .post(Posts.store)
@@ -28,7 +29,7 @@ export default (app, auth) => {
     .get(Posts.index);
 
   app
-    .route('/api/users/posts/:id')
+    .route('/users/posts/:id')
     .all(auth.authenticate())
     // USER LOGADO DELETA UM POST
     .delete(Posts.destroy)
@@ -37,6 +38,24 @@ export default (app, auth) => {
     // USER LOGADO VÊ UM POST ESPECÍFICO
     .get(Posts.findOne);
 
-  // RETORNA UMA LISTA DE USERS
-  app.get('/users', Users.index);
+  // USER LOGADO VÊ POSTS DE TODOS USUÁRIOS
+  app.get('/posts', auth.authenticate(), Users.show);
+
+  app
+    .route('/:id/comments')
+    .all(auth.authenticate())
+    // USER LOGADO CRIA UM COMENTÁRIO EM UM POST
+    .post(Comments.store)
+    // USER LOGADO VÊ TODOS SEUS COMENTÁRIOS EM UM POST
+    .get(Comments.index);
+
+  app
+    .route('/:post_id/comments/:comment_id')
+    .all(auth.authenticate())
+    // USER LOGADO VÊ UM COMENTÁRIO ESPECÍFICO EM UM POST
+    .get(Comments.findOne)
+    // USER LOGADO EDITA UM COMENTÁRIO ESPECÍFICO EM UM POST
+    .put(Comments.update)
+    // USER LOGADO DELETA UM COMENTÁRIO ESPECÍFICO EM UM POST
+    .delete(Comments.destroy);
 };
