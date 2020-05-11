@@ -20,9 +20,8 @@ class SessionController {
       if (created === false) {
         return res.status(400).json({ message: 'Usuário já existe!' });
       } else {
-        const payload = { user: user.id };
         return res.status(201).json({
-          token: jwt.sign(payload, config.secret, { expiresIn: '1h' }),
+          token: jwt.sign({ id: user.id }, config.secret, { expiresIn: '1h' }),
         });
       }
     } catch (error) {
@@ -41,9 +40,8 @@ class SessionController {
       try {
         const user = await User.findOne({ where: { username } });
         if (await User.isPassword(user.password, password)) {
-          const payload = { user: user.id };
           return res.status(200).json({
-            token: sign(payload, config.secret, { expiresIn: '1h' }),
+            token: sign({ id: user.id }, config.secret, { expiresIn: '1h' }),
           });
         }
         return res.status(401).json({ message: 'Login inválido!' });
